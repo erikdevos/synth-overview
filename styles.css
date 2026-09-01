@@ -1,0 +1,459 @@
+:root {
+  --bg: #f6f6f4;
+  --panel: #ffffff;
+  --ink: #16161a;
+  --muted: #6b6b76;
+  --line: #e2e2dd;
+  --accent: #d8503c;
+  --accent-soft: #fbe9e5;
+  --chip: #efefeb;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131316;
+    --panel: #1b1b1f;
+    --ink: #ececef;
+    --muted: #9a9aa4;
+    --line: #2c2c32;
+    --accent: #ff7a63;
+    --accent-soft: #3a231f;
+    --chip: #26262b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 18px rgba(0, 0, 0, 0.25);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    15px/1.5 -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Inter,
+    Roboto,
+    sans-serif;
+}
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+}
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+code {
+  background: var(--chip);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* ---------- top bar ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.brandmark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brandmark h1 {
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.search-wrap {
+  flex: 1;
+}
+#q {
+  width: 100%;
+  max-width: 520px;
+  padding: 9px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+}
+#q:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.viewtoggle {
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.viewtoggle button {
+  border: 0;
+  padding: 8px 14px;
+  font-size: 13px;
+  background: var(--panel);
+  color: var(--muted);
+  cursor: pointer;
+}
+.viewtoggle button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---------- layout ---------- */
+main {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 24px;
+  padding: 24px 20px 60px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+@media (max-width: 860px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- filters ---------- */
+.filters {
+  position: sticky;
+  top: 72px;
+  align-self: start;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 1rem;
+}
+.filter-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-right: 2px;
+}
+.filter-head h2 {
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.resetbtn {
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.resetbtn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+.fgroup {
+  margin-bottom: 20px;
+}
+.fgroup h3 {
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chips button {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.chips button:hover {
+  border-color: var(--accent);
+}
+.chips button.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.pricerange {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pricerange input {
+  width: 0;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 13px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--panel);
+  color: var(--ink);
+  -moz-appearance: textfield;
+}
+.pricerange input::-webkit-outer-spin-button,
+.pricerange input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.pricerange input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+#sort {
+  width: 100%;
+  padding: 7px 9px;
+  font-size: 13px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+/* ---------- results ---------- */
+.resbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.12s ease,
+    border-color 0.12s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.card .thumb {
+  aspect-ratio: 16 / 10;
+  background: white;
+  display: block;
+  width: 100%;
+  object-fit: contain;
+}
+.card .body {
+  padding: 10px 15px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.card .brand {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.card .name {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 0.3rem;
+}
+.card .price {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.3rem;
+}
+.specline {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
+}
+.tag {
+  font-size: 12px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--chip);
+  color: var(--muted);
+}
+.tag.hi {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---------- table ---------- */
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+  white-space: nowrap;
+}
+th,
+td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+}
+th {
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+tbody tr:hover {
+  background: var(--chip);
+  cursor: pointer;
+}
+td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+img.tinythumb {
+  width: 44px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 3px;
+  display: block;
+}
+
+/* ---------- detail dialog ---------- */
+dialog {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 0;
+  max-width: 620px;
+  width: calc(100% - 40px);
+  box-shadow: var(--shadow);
+}
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+.dhead {
+  display: flex;
+  gap: 16px;
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.dhead img {
+  width: 180px;
+  border-radius: 6px;
+  background: var(--chip);
+}
+.dhead .price {
+  font-size: 20px;
+}
+.dbody {
+  padding: 4px 18px 18px;
+}
+.dbody dl {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0;
+  margin: 0;
+}
+.dbody dt {
+  padding: 7px 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--line);
+}
+.dbody dd {
+  padding: 7px 0;
+  margin: 0;
+  font-size: 13.5px;
+  border-bottom: 1px solid var(--line);
+}
+.dfoot {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-top: 1px solid var(--line);
+}
+.dfoot a {
+  color: var(--accent);
+  font-size: 13px;
+}
+.dfoot button {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  padding: 6px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 60px 0;
+}
+.foot {
+  border-top: 1px solid var(--line);
+  padding: 16px 20px;
+  color: var(--muted);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+/* [hidden] must beat display:grid/flex on the view containers */
+[hidden] {
+  display: none !important;
+}

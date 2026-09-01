@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Synth Overview</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brandmark">
+    <span class="dot"></span>
+    <h1>Synth Overview</h1>
+  </div>
+  <div class="search-wrap">
+    <input id="q" type="search" placeholder="Search name, brand, spec&hellip;  (press /)" autocomplete="off">
+  </div>
+  <div class="viewtoggle" role="group" aria-label="View">
+    <button data-view="grid" class="active">Cards</button>
+    <button data-view="table">Table</button>
+  </div>
+</header>
+
+<main>
+  <aside class="filters">
+    <div class="filter-head">
+      <h2>Filters</h2>
+      <button id="reset" class="resetbtn">Reset</button>
+    </div>
+
+    <section class="fgroup">
+      <h3>Category</h3>
+      <div id="f-category" class="chips">
+        <button data-val="synth">Synthesizers</button>
+        <button data-val="drum">Drum machines</button>
+        <button data-val="sequencer">Sequencers / controllers</button>
+        <button data-val="effects">Effects</button>
+      </div>
+    </section>
+
+    <section class="fgroup">
+      <h3>Brand</h3>
+      <div id="f-brand" class="chips"></div>
+    </section>
+
+    <section class="fgroup">
+      <h3>Form factor</h3>
+      <div id="f-form" class="chips"></div>
+    </section>
+
+    <section class="fgroup">
+      <h3>Voicing</h3>
+      <div id="f-poly" class="chips">
+        <button data-val="mono">Mono</button>
+        <button data-val="para">Paraphonic</button>
+        <button data-val="poly">Polyphonic</button>
+      </div>
+    </section>
+
+    <section class="fgroup">
+      <h3>Must have</h3>
+      <div id="f-feat" class="chips">
+        <button data-val="seq">Sequencer</button>
+        <button data-val="arp">Arpeggiator</button>
+        <button data-val="fx">Onboard FX</button>
+        <button data-val="din">MIDI DIN</button>
+        <button data-val="usb">USB</button>
+        <button data-val="cv">CV / patchbay</button>
+        <button data-val="batt">Battery / USB powered</button>
+        <button data-val="presets">Preset memory</button>
+        <button data-val="keys">Has keys</button>
+      </div>
+    </section>
+
+    <section class="fgroup">
+      <h3>Price range <span id="pricelabel" class="muted"></span></h3>
+      <div class="pricerange">
+        <input id="f-price-min" type="number" inputmode="numeric" min="0" step="10" placeholder="Min">
+        <span class="muted">&ndash;</span>
+        <input id="f-price-max" type="number" inputmode="numeric" min="0" step="10" placeholder="Max">
+      </div>
+    </section>
+
+    <section class="fgroup">
+      <h3>Sort</h3>
+      <select id="sort">
+        <option value="brand">Brand, then name</option>
+        <option value="price-asc">Price: low to high</option>
+        <option value="price-desc">Price: high to low</option>
+        <option value="voices-desc">Voices: most first</option>
+        <option value="year-desc">Newest first</option>
+        <option value="year-asc">Oldest first</option>
+      </select>
+    </section>
+  </aside>
+
+  <section class="results">
+    <div class="resbar">
+      <span id="count" class="muted"></span>
+      <span id="pricestats" class="muted"></span>
+    </div>
+    <div id="grid" class="grid"></div>
+    <div id="table" class="tablewrap" hidden></div>
+    <p id="empty" class="empty" hidden>Nothing matches these filters.</p>
+  </section>
+</main>
+
+<dialog id="detail"></dialog>
+
+<footer class="foot">
+  Prices are indicative EU street prices and specs are compiled by hand &mdash; verify before buying.
+  Edit <code>data/synths.json</code> to add models; drop photos in <code>images/&lt;id&gt;.jpg</code>.
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
