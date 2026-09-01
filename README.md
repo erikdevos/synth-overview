@@ -15,14 +15,14 @@ work — the browser blocks `fetch` of the JSON over `file://`.)
 
 ## Files
 
-| File | What it is |
-| --- | --- |
+| File               | What it is                                                                     |
+| ------------------ | ------------------------------------------------------------------------------ |
 | `data/synths.json` | The whole dataset. One object per model. Edit this to add or correct anything. |
-| `index.html` | Markup: top bar, filter sidebar, results area. |
-| `app.js` | Filtering, sorting, card/table rendering, detail dialog. No framework. |
-| `styles.css` | Styling, light and dark. |
-| `serve.js` | ~30-line static file server so `fetch` works. |
-| `images/` | Optional product photos. |
+| `index.html`       | Markup: top bar, filter sidebar, results area.                                 |
+| `app.js`           | Filtering, sorting, card/table rendering, detail dialog. No framework.         |
+| `styles.css`       | Styling, light and dark.                                                       |
+| `serve.js`         | ~30-line static file server so `fetch` works.                                  |
+| `images/`          | Optional product photos.                                                       |
 
 ## Using it
 
