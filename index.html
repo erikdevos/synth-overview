@@ -19,13 +19,19 @@
     <button data-view="grid" class="active">Cards</button>
     <button data-view="table">Table</button>
   </div>
+  <button id="filtertoggle" class="filtertoggle" aria-expanded="false" aria-controls="filters">
+    Filters <span id="filtercount" class="filtercount" hidden></span>
+  </button>
 </header>
 
+<div id="filterbackdrop" class="filterbackdrop" hidden></div>
+
 <main>
-  <aside class="filters">
+  <aside class="filters" id="filters">
     <div class="filter-head">
       <h2>Filters</h2>
       <button id="reset" class="resetbtn">Reset</button>
+      <button id="filterclose" class="filterclose" aria-label="Close filters">&times;</button>
     </div>
 
     <section class="fgroup">

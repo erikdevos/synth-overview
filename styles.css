@@ -121,6 +121,50 @@ code {
   color: #fff;
 }
 
+.filtertoggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.filtertoggle.has-active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.filtercount {
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  line-height: 16px;
+  border-radius: 999px;
+  padding: 0 4px;
+  display: inline-block;
+  text-align: center;
+}
+.filterclose {
+  display: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.filterbackdrop {
+  display: none;
+}
+
 /* ---------- layout ---------- */
 main {
   display: grid;
@@ -133,6 +177,7 @@ main {
 @media (max-width: 860px) {
   main {
     grid-template-columns: 1fr;
+    padding: 16px 14px 40px;
   }
 }
 
@@ -150,8 +195,12 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   margin-bottom: 14px;
   padding-right: 2px;
+}
+.filter-head h2 {
+  flex: 1;
 }
 .filter-head h2 {
   font-size: 20px;
@@ -456,4 +505,82 @@ dialog::backdrop {
 /* [hidden] must beat display:grid/flex on the view containers */
 [hidden] {
   display: none !important;
+}
+
+/* ---------- mobile ---------- */
+@media (max-width: 860px) {
+  .filtertoggle {
+    display: flex;
+  }
+
+  .filterclose {
+    display: block;
+  }
+
+  .filterbackdrop:not([hidden]) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 25;
+  }
+
+  .filters {
+    position: fixed;
+    inset: 0 auto 0 0;
+    top: 0;
+    z-index: 30;
+    width: min(320px, 86vw);
+    max-height: none;
+    height: 100%;
+    height: 100dvh;
+    background: var(--panel);
+    padding: 16px 16px 24px;
+    box-shadow: var(--shadow);
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+  }
+  .filters.open {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .brandmark h1 {
+    font-size: 15px;
+  }
+  .search-wrap {
+    order: 3;
+    flex-basis: 100%;
+  }
+  .viewtoggle button {
+    padding: 7px 11px;
+  }
+  .resbar {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .card .name {
+    font-size: 14px;
+  }
+  .dhead {
+    flex-direction: column;
+  }
+  .dhead img {
+    width: 100%;
+    max-height: 160px;
+    object-fit: contain;
+  }
+  .dbody dl {
+    grid-template-columns: 110px 1fr;
+  }
 }

@@ -359,7 +359,46 @@ function wire() {
 
   document.addEventListener('keydown', (e) => {
     if (e.key === '/' && document.activeElement !== $('#q')) { e.preventDefault(); $('#q').focus(); }
+    if (e.key === 'Escape') closeFilters();
   });
+
+  wireMobileFilters();
+}
+
+/* ---------- mobile filter drawer ---------- */
+// Below the 860px breakpoint the sidebar becomes an off-canvas drawer opened
+// by the "Filters" pill in the top bar; above it these calls are inert.
+function openFilters() {
+  $('#filters').classList.add('open');
+  $('#filterbackdrop').hidden = false;
+  $('#filtertoggle').setAttribute('aria-expanded', 'true');
+}
+function closeFilters() {
+  $('#filters').classList.remove('open');
+  $('#filterbackdrop').hidden = true;
+  $('#filtertoggle').setAttribute('aria-expanded', 'false');
+}
+function activeFilterCount() {
+  return state.brand.size + state.form.size + state.poly.size + state.feat.size
+    + (state.minPrice != null ? 1 : 0) + (state.maxPrice != null && state.maxPrice !== DEFAULT_MAX_PRICE ? 1 : 0);
+}
+function updateFilterBadge() {
+  const n = activeFilterCount();
+  const badge = $('#filtercount');
+  badge.hidden = n === 0;
+  badge.textContent = n;
+  $('#filtertoggle').classList.toggle('has-active', n > 0);
+}
+function wireMobileFilters() {
+  $('#filtertoggle').addEventListener('click', openFilters);
+  $('#filterclose').addEventListener('click', closeFilters);
+  $('#filterbackdrop').addEventListener('click', closeFilters);
+  // any filter interaction updates the badge; cheapest hook is a delegated
+  // listener on <main> that fires after the chip/price/reset handlers run
+  document.querySelector('main').addEventListener('click', updateFilterBadge);
+  $('#f-price-min').addEventListener('input', updateFilterBadge);
+  $('#f-price-max').addEventListener('input', updateFilterBadge);
+  updateFilterBadge();
 }
 
 /* ---------- boot ---------- */
