@@ -360,7 +360,7 @@
     "year": 2014,
     "price_eur": 1499,
     "url": "https://www.korg.com/products/synthesizers/ms20_fs/",
-    "image": "",
+    "image": "images/korg-ms20-fs.jpg",
     "category": "synth"
   },
   {
@@ -2128,7 +2128,7 @@
     "year": 2018,
     "price_eur": 299,
     "url": "https://www.arturia.com/",
-    "image": "images/arturia-drumbrute-impact.jpg",
+    "image": "images/arturia-drumbrute-impact.png",
     "category": "drum"
   },
   {
@@ -2310,7 +2310,7 @@
     "year": 2021,
     "price_eur": 349,
     "url": "https://www.behringer.com/",
-    "image": "images/behringer-rd-9.jpg",
+    "image": "images/behringer-rd-9.png",
     "category": "drum"
   },
   {
@@ -2336,7 +2336,7 @@
     "year": 2020,
     "price_eur": 129,
     "url": "https://www.behringer.com/",
-    "image": "images/behringer-rd-6.jpg",
+    "image": "images/behringer-rd-6.png",
     "category": "drum"
   },
   {
@@ -2388,7 +2388,7 @@
     "year": 2016,
     "price_eur": 129,
     "url": "https://www.arturia.com/",
-    "image": "images/arturia-keystep.jpg",
+    "image": "images/arturia-keystep.png",
     "category": "sequencer"
   },
   {
@@ -2414,7 +2414,7 @@
     "year": 2020,
     "price_eur": 199,
     "url": "https://www.arturia.com/",
-    "image": "images/arturia-keystep-37.jpg",
+    "image": "images/arturia-keystep-37.png",
     "category": "sequencer"
   },
   {
@@ -2440,7 +2440,7 @@
     "year": 2020,
     "price_eur": 399,
     "url": "https://www.arturia.com/",
-    "image": "images/arturia-keystep-pro.jpg",
+    "image": "images/arturia-keystep-pro.png",
     "category": "sequencer"
   },
   {
@@ -2466,7 +2466,7 @@
     "year": 2015,
     "price_eur": 249,
     "url": "https://www.arturia.com/",
-    "image": "images/arturia-beatstep-pro.jpg",
+    "image": "images/arturia-beatstep-pro.png",
     "category": "sequencer"
   },
   {
@@ -2700,7 +2700,7 @@
     "year": 2023,
     "price_eur": 399,
     "url": "https://www.behringer.com/",
-    "image": "images/behringer-pro-800.jpg",
+    "image": "images/behringer-pro-800.png",
     "category": "synth"
   },
   {
@@ -2726,7 +2726,7 @@
     "year": 2023,
     "price_eur": 249,
     "url": "https://www.behringer.com/",
-    "image": "images/behringer-toro.jpg",
+    "image": "images/behringer-toro.png",
     "category": "synth"
   },
   {
@@ -2752,7 +2752,7 @@
     "year": 2024,
     "price_eur": 299,
     "url": "https://www.behringer.com/",
-    "image": "images/behringer-ms-1-mkii.jpg",
+    "image": "images/behringer-ms-1-mkii.png",
     "category": "synth"
   },
   {
@@ -2804,7 +2804,7 @@
     "year": 2019,
     "price_eur": 299,
     "url": "https://www.behringer.com/",
-    "image": "images/behringer-k-2.jpg",
+    "image": "images/behringer-k-2.png",
     "category": "synth"
   }
 ]
