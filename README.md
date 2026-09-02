@@ -39,6 +39,10 @@ Append an object to `data/synths.json` and reload. Field notes:
 - `category` — `"synth"`, `"sequencer"` (sequencers/controllers with no synth engine,
   e.g. Behringer Swing) or `"effects"` (FX-only boxes, e.g. Korg NTS-3). Drives the
   Category filter, which defaults to `synth` only on a first visit.
+- `form` — physical size class, not marketing name: `"micro"` (handheld/pocketable —
+  Monotron, Pocket Operator, Behringer *Micro*), `"mini"` (Volca-class tabletop ~190 mm —
+  Volca, NTS-1, Roland Boutique, Behringer *Mini* series), `"desktop"`, `"keyboard"`,
+  `"portable"`.
 - `polyphony` — free text, but include the word `Mono`, `Para` or nothing (treated as poly);
   the Voicing filter reads this.
 - `seq`, `fx`, `cv`, `keys` — write `"None"` when absent; the feature filters treat
@@ -48,10 +52,12 @@ Append an object to `data/synths.json` and reload. Field notes:
 
 ## Images
 
-58 of 60 entries have a real product photo in `images/`, fetched from Thomann product
-pages (`"image": "images/<id>.jpg"` in the data file, 600×600 JPG). `korg-ms20-fs` and
-`te-op-z` have no current Thomann listing, so they fall back to the generated
-placeholder — same as any future entry you add without a photo.
+All 119 entries have a real product photo in `images/`, mostly fetched from Thomann
+product pages (`"image": "images/<id>.jpg"` in the data file, 600×600 JPG). Models
+Thomann has delisted use the manufacturer's own press shot instead — `korg-monotron` and
+`korg-monotribe` from korg.com (1200×600 JPG), `te-po-14-sub` and `te-op-z` from
+teenage.engineering (square WebP; the `image` field carries the real extension). Add an
+entry without a photo and it falls back to the generated placeholder.
 
 To replace or add one: drop a file in `images/` and point the entry's `image` field at
 it. An external URL works too, but then the dashboard stops being fully offline.
