@@ -62,8 +62,9 @@ code {
   top: 0;
   z-index: 20;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 20px;
+  gap: 12px 20px;
   padding: 12px 20px;
   background: var(--panel);
   border-bottom: 1px solid var(--line);
@@ -87,6 +88,7 @@ code {
 }
 .search-wrap {
   flex: 1;
+  min-width: 160px;
 }
 #q {
   width: 100%;
@@ -102,21 +104,25 @@ code {
   outline: 2px solid var(--accent);
   outline-offset: -1px;
 }
-.viewtoggle {
+.viewtoggle,
+.scopetoggle {
   display: flex;
   border: 1px solid var(--line);
   border-radius: 8px;
   overflow: hidden;
 }
-.viewtoggle button {
+.viewtoggle button,
+.scopetoggle button {
   border: 0;
   padding: 8px 14px;
   font-size: 13px;
   background: var(--panel);
   color: var(--muted);
   cursor: pointer;
+  white-space: nowrap;
 }
-.viewtoggle button.active {
+.viewtoggle button.active,
+.scopetoggle button.active {
   background: var(--accent);
   color: #fff;
 }
@@ -472,7 +478,10 @@ dialog::backdrop {
 }
 .dfoot {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  align-items: center;
+  gap: 10px;
   padding: 14px 18px;
   border-top: 1px solid var(--line);
 }
@@ -487,6 +496,22 @@ dialog::backdrop {
   padding: 6px 14px;
   border-radius: 7px;
   cursor: pointer;
+}
+.dactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dactions .collect-btn,
+.dactions .wishlist-btn {
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.dactions .collect-btn.on,
+.dactions .wishlist-btn.on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .empty {

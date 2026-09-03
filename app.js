@@ -18,6 +18,9 @@ const state = {
   maxPrice: null,
   sort: 'brand',
   view: 'grid',
+  scope: 'all', // 'all' | 'collection' | 'wishlist' — not persisted, always opens on "All"
+  collection: new Set(),
+  wishlist: new Set(),
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -34,6 +37,35 @@ function loadPersisted() {
   } catch {
     return null;
   }
+}
+
+// Collection ("I own this") and wishlist ("I want this") are separate,
+// per-browser sets of synth ids — independent of the search/filter state
+// above so they survive filter resets.
+const COLLECTION_KEY = 'synth-overview:collection';
+const WISHLIST_KEY = 'synth-overview:wishlist';
+
+function loadIdSet(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(parsed) ? parsed : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveIdSet(key, set) {
+  try {
+    localStorage.setItem(key, JSON.stringify([...set]));
+  } catch {
+    // storage unavailable (private mode, quota) — membership just won't persist
+  }
+}
+
+function toggleMembership(key, set, id) {
+  set.has(id) ? set.delete(id) : set.add(id);
+  saveIdSet(key, set);
 }
 
 function savePersisted() {
@@ -111,6 +143,8 @@ function haystack(s) {
 /* ---------- filtering ---------- */
 function filtered() {
   let out = state.all.filter((s) => {
+    if (state.scope === 'collection' && !state.collection.has(s.id)) return false;
+    if (state.scope === 'wishlist' && !state.wishlist.has(s.id)) return false;
     if (state.q && !haystack(s).includes(state.q)) return false;
     if (state.category.size && !state.category.has(s.category)) return false;
     if (state.brand.size && !state.brand.has(s.brand)) return false;
@@ -209,6 +243,13 @@ function render() {
     ? `${euro(Math.min(...prices))} – ${euro(Math.max(...prices))}` : '';
 
   $('#empty').hidden = list.length > 0;
+  if (!list.length) {
+    $('#empty').textContent = state.scope === 'collection'
+      ? 'Your collection is empty — open a synth and add it from the popup.'
+      : state.scope === 'wishlist'
+      ? 'Your wishlist is empty — open a synth and add it from the popup.'
+      : 'Nothing matches these filters.';
+  }
   $('#grid').hidden = state.view !== 'grid';
   $('#table').hidden = state.view !== 'table';
   // only build the visible view; clear the other so it holds no stale markup
@@ -230,6 +271,8 @@ function openDetail(id) {
     ['Presets', s.presets], ['Multitimbral', s.multitimbral ? 'yes' : 'no'],
     ['Form factor', s.form], ['Released', s.year],
   ];
+  const inCollection = state.collection.has(s.id);
+  const inWishlist = state.wishlist.has(s.id);
   $('#detail').innerHTML = `
     <div class="dhead">
       ${imgTag(s, '')}
@@ -243,9 +286,28 @@ function openDetail(id) {
       `<dt>${esc(k)}</dt><dd>${esc(v ?? '—')}</dd>`).join('')}</dl></div>
     <div class="dfoot">
       <a href="${esc(s.url)}" target="_blank" rel="noopener">Manufacturer page &nearr;</a>
-      <button value="close">Close</button>
+      <div class="dactions">
+        <button type="button" class="collect-btn${inCollection ? ' on' : ''}" data-id="${esc(s.id)}">${inCollection ? '✓ In collection' : '+ Add to collection'}</button>
+        <button type="button" class="wishlist-btn${inWishlist ? ' on' : ''}" data-id="${esc(s.id)}">${inWishlist ? '★ In wishlist' : '☆ Add to wishlist'}</button>
+        <button value="close">Close</button>
+      </div>
     </div>`;
   $('#detail').showModal();
+}
+
+function refreshDetailActions(id) {
+  const cb = $('#detail .collect-btn');
+  const wb = $('#detail .wishlist-btn');
+  if (cb && cb.dataset.id === id) {
+    const on = state.collection.has(id);
+    cb.classList.toggle('on', on);
+    cb.textContent = on ? '✓ In collection' : '+ Add to collection';
+  }
+  if (wb && wb.dataset.id === id) {
+    const on = state.wishlist.has(id);
+    wb.classList.toggle('on', on);
+    wb.textContent = on ? '★ In wishlist' : '☆ Add to wishlist';
+  }
 }
 
 /* ---------- wiring ---------- */
@@ -289,6 +351,9 @@ function applyPersisted(saved, knownBrand, knownForm) {
 }
 
 function wire() {
+  state.collection = loadIdSet(COLLECTION_KEY);
+  state.wishlist = loadIdSet(WISHLIST_KEY);
+
   const uniq = (k) => [...new Set(state.all.map((s) => s[k]))].sort();
   const brands = uniq('brand');
   const forms = uniq('form');
@@ -353,9 +418,39 @@ function wire() {
 
   document.addEventListener('click', (e) => {
     const hit = e.target.closest('.card, tbody tr');
-    if (hit) openDetail(hit.dataset.id);
-    if (e.target.matches('.dfoot button')) $('#detail').close();
+    if (hit) { openDetail(hit.dataset.id); return; }
+
+    const collectBtn = e.target.closest('.collect-btn');
+    if (collectBtn) {
+      const id = collectBtn.dataset.id;
+      toggleMembership(COLLECTION_KEY, state.collection, id);
+      refreshDetailActions(id);
+      updateScopeToggle();
+      if (state.scope === 'collection') render();
+      return;
+    }
+
+    const wishBtn = e.target.closest('.wishlist-btn');
+    if (wishBtn) {
+      const id = wishBtn.dataset.id;
+      toggleMembership(WISHLIST_KEY, state.wishlist, id);
+      refreshDetailActions(id);
+      updateScopeToggle();
+      if (state.scope === 'wishlist') render();
+      return;
+    }
+
+    if (e.target.matches('.dfoot button[value="close"]')) $('#detail').close();
   });
+
+  document.querySelectorAll('.scopetoggle button').forEach((b) => {
+    b.addEventListener('click', () => {
+      state.scope = b.dataset.scope;
+      updateScopeToggle();
+      render();
+    });
+  });
+  updateScopeToggle();
 
   document.addEventListener('keydown', (e) => {
     if (e.key === '/' && document.activeElement !== $('#q')) { e.preventDefault(); $('#q').focus(); }
@@ -363,6 +458,17 @@ function wire() {
   });
 
   wireMobileFilters();
+}
+
+function updateScopeToggle() {
+  const labels = { all: 'All', collection: 'Collection', wishlist: 'Wishlist' };
+  document.querySelectorAll('.scopetoggle button').forEach((b) => {
+    const scope = b.dataset.scope;
+    b.classList.toggle('active', scope === state.scope);
+    const count = scope === 'collection' ? state.collection.size
+      : scope === 'wishlist' ? state.wishlist.size : null;
+    b.textContent = count != null ? `${labels[scope]} (${count})` : labels[scope];
+  });
 }
 
 /* ---------- mobile filter drawer ---------- */
