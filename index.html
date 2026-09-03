@@ -24,6 +24,9 @@
     <button data-scope="collection">Collection</button>
     <button data-scope="wishlist">Wishlist</button>
   </div>
+  <button id="sharebtn" class="sharebtn" type="button" title="Copy your collection &amp; wishlist to another device">
+    &#8646; Share
+  </button>
   <button id="filtertoggle" class="filtertoggle" aria-expanded="false" aria-controls="filters">
     Filters <span id="filtercount" class="filtercount" hidden></span>
   </button>
@@ -117,6 +120,36 @@
 </main>
 
 <dialog id="detail"></dialog>
+
+<dialog id="sharedialog">
+  <div class="dhead">
+    <div>
+      <h2>Share your collection &amp; wishlist</h2>
+      <p class="muted">Copy this code (or link) and paste it into Synth Overview on another device to bring your saved items with you. Importing merges with what's already saved there &mdash; nothing gets overwritten.</p>
+    </div>
+  </div>
+  <div class="dbody sharebody">
+    <label for="sharecode">Your code</label>
+    <textarea id="sharecode" rows="3" readonly></textarea>
+    <div class="rowbtns">
+      <button id="copycode" type="button">Copy code</button>
+      <button id="copylink" type="button">Copy link</button>
+    </div>
+
+    <hr>
+
+    <p id="importhint" hidden></p>
+    <label for="importcode">Import a code or link</label>
+    <textarea id="importcode" rows="3" placeholder="Paste a code or share link here&hellip;"></textarea>
+    <div class="rowbtns">
+      <button id="importbtn" type="button">Import</button>
+    </div>
+    <p id="importresult" class="muted" hidden></p>
+  </div>
+  <div class="dfoot single">
+    <button value="close">Close</button>
+  </div>
+</dialog>
 
 <footer class="foot">
   Prices are indicative EU street prices and specs are compiled by hand &mdash; verify before buying.

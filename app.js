@@ -68,6 +68,67 @@ function toggleMembership(key, set, id) {
   saveIdSet(key, set);
 }
 
+/* ---------- share code (collection + wishlist transfer) ---------- */
+// A base64url-encoded {c: [...ids], w: [...ids]} blob — no server involved,
+// the whole thing round-trips through the URL/clipboard.
+function encodeShareCode() {
+  const json = JSON.stringify({ v: 1, c: [...state.collection], w: [...state.wishlist] });
+  return btoa(json).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function decodeShareCode(input) {
+  try {
+    const linkMatch = String(input).match(/#data=([^&\s]+)/);
+    let b64 = (linkMatch ? linkMatch[1] : input).trim().replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    const payload = JSON.parse(atob(b64));
+    if (!payload || !Array.isArray(payload.c) || !Array.isArray(payload.w)) return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+// Merges (never replaces) — ids not present in the current dataset are
+// counted as skipped rather than silently dropped, so a code generated
+// against an older/newer data/synths.json still gives useful feedback.
+function importPayload(payload) {
+  const known = new Set(state.all.map((s) => s.id));
+  let addedC = 0, addedW = 0, skipped = 0;
+  for (const id of payload.c) {
+    if (!known.has(id)) { skipped++; continue; }
+    if (!state.collection.has(id)) { state.collection.add(id); addedC++; }
+  }
+  for (const id of payload.w) {
+    if (!known.has(id)) { skipped++; continue; }
+    if (!state.wishlist.has(id)) { state.wishlist.add(id); addedW++; }
+  }
+  saveIdSet(COLLECTION_KEY, state.collection);
+  saveIdSet(WISHLIST_KEY, state.wishlist);
+  updateScopeToggle();
+  if (state.scope !== 'all') render();
+  return { addedC, addedW, skipped };
+}
+
+function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  }
+  fallbackCopy(text);
+  return Promise.resolve();
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch { /* clipboard unavailable */ }
+  document.body.removeChild(ta);
+}
+
 function savePersisted() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -440,7 +501,7 @@ function wire() {
       return;
     }
 
-    if (e.target.matches('.dfoot button[value="close"]')) $('#detail').close();
+    if (e.target.matches('.dfoot button[value="close"]')) e.target.closest('dialog').close();
   });
 
   document.querySelectorAll('.scopetoggle button').forEach((b) => {
@@ -452,12 +513,69 @@ function wire() {
   });
   updateScopeToggle();
 
+  wireShareDialog();
+
   document.addEventListener('keydown', (e) => {
     if (e.key === '/' && document.activeElement !== $('#q')) { e.preventDefault(); $('#q').focus(); }
     if (e.key === 'Escape') closeFilters();
   });
 
   wireMobileFilters();
+}
+
+/* ---------- share dialog ---------- */
+function shareLink(code) {
+  return `${location.origin}${location.pathname}#data=${code}`;
+}
+
+function openShareDialog(prefillImport) {
+  const code = encodeShareCode();
+  $('#sharecode').value = code;
+  $('#sharecode').dataset.link = shareLink(code);
+  $('#importresult').hidden = true;
+  if (prefillImport) {
+    $('#importcode').value = prefillImport;
+    $('#importhint').hidden = false;
+    $('#importhint').textContent = 'Found a shared code in this link — click Import to add it to your saved items.';
+  } else {
+    $('#importhint').hidden = true;
+    $('#importcode').value = '';
+  }
+  $('#sharedialog').showModal();
+}
+
+function wireShareDialog() {
+  $('#sharebtn').addEventListener('click', () => openShareDialog());
+
+  $('#copycode').addEventListener('click', () => {
+    copyText($('#sharecode').value);
+    flashButton($('#copycode'), 'Copied!');
+  });
+  $('#copylink').addEventListener('click', () => {
+    copyText($('#sharecode').dataset.link);
+    flashButton($('#copylink'), 'Copied!');
+  });
+
+  $('#importbtn').addEventListener('click', () => {
+    const payload = decodeShareCode($('#importcode').value);
+    const result = $('#importresult');
+    result.hidden = false;
+    if (!payload) {
+      result.textContent = 'That code looks invalid — check you copied the whole thing.';
+      return;
+    }
+    const { addedC, addedW, skipped } = importPayload(payload);
+    $('#sharecode').value = encodeShareCode();
+    $('#sharecode').dataset.link = shareLink($('#sharecode').value);
+    result.textContent = `Added ${addedC} to collection, ${addedW} to wishlist.`
+      + (skipped ? ` (${skipped} unknown item${skipped > 1 ? 's' : ''} skipped.)` : '');
+  });
+}
+
+function flashButton(btn, msg) {
+  const original = btn.textContent;
+  btn.textContent = msg;
+  setTimeout(() => { btn.textContent = original; }, 1400);
 }
 
 function updateScopeToggle() {
@@ -507,10 +625,20 @@ function wireMobileFilters() {
   updateFilterBadge();
 }
 
+// A link shared via "Copy link" lands here as #data=<code>. Pre-fill the
+// import box but never merge automatically — the visitor still has to
+// click Import, so opening a link never silently changes their storage.
+function checkShareLink() {
+  const m = location.hash.match(/^#data=(.+)$/);
+  if (!m) return;
+  openShareDialog(m[1]);
+  history.replaceState(null, '', location.pathname + location.search);
+}
+
 /* ---------- boot ---------- */
 fetch('data/synths.json')
   .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-  .then((data) => { state.all = data; wire(); render(); })
+  .then((data) => { state.all = data; wire(); render(); checkShareLink(); })
   .catch((err) => {
     $('#grid').innerHTML = `<p class="empty">Could not load <code>data/synths.json</code> (${esc(err.message)}).<br>
       Opening index.html directly from disk blocks fetch — start a local server and browse to it:<br>

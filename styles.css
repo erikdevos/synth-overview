@@ -127,6 +127,24 @@ code {
   color: #fff;
 }
 
+.sharebtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sharebtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .filtertoggle {
   display: none;
   align-items: center;
@@ -485,6 +503,9 @@ dialog::backdrop {
   padding: 14px 18px;
   border-top: 1px solid var(--line);
 }
+.dfoot.single {
+  justify-content: flex-end;
+}
 .dfoot a {
   color: var(--accent);
   font-size: 13px;
@@ -512,6 +533,61 @@ dialog::backdrop {
   background: var(--accent-soft);
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* ---------- share dialog ---------- */
+.sharebody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sharebody label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.sharebody textarea {
+  width: 100%;
+  resize: vertical;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--ink);
+}
+.sharebody .rowbtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sharebody .rowbtns button {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  padding: 6px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12.5px;
+}
+.sharebody .rowbtns button:hover {
+  border-color: var(--accent);
+}
+.sharebody hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 4px 0;
+}
+#importhint {
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 8px 10px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  margin: 0;
 }
 
 .empty {
